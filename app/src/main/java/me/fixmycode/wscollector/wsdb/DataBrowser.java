@@ -19,6 +19,7 @@ public class DataBrowser extends SQLiteAssetHelper {
 
     private DataBrowser(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        setForcedUpgrade();
     }
 
     public static DataBrowser getInstance(Context context){

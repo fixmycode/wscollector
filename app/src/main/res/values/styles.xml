@@ -67,7 +67,7 @@
     </style>
 
     <style name="AppTheme.DimFrame">
-        <item name="android:padding">24dp</item>
+        <item name="android:padding">@dimen/card.padding</item>
         <item name="android:background">@color/dimmer_black</item>
         <item name="android:clipToPadding">false</item>
     </style>

@@ -31,4 +31,5 @@
     <string name="type.event">Event</string>
     <string name="type.chara">Character</string>
     <string name="row_description">Image used to identify the item</string>
+    <string name="space">This is just white space</string>
 </resources>

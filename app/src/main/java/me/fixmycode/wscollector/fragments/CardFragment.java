@@ -1,5 +1,6 @@
 package me.fixmycode.wscollector.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -12,6 +13,7 @@ import android.text.SpannableString;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +36,7 @@ public class CardFragment extends Fragment {
     private static final String TAG = "FRAG_CARD";
 
     private Card card;
+    private CardListener listener;
 
     public static CardFragment newInstance(Card card) {
         CardFragment fragment = new CardFragment();
@@ -48,6 +51,9 @@ public class CardFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_card, container, false);
         card = (Card) getArguments().getSerializable(PARAM_CARD);
+        if(this.listener != null){
+            this.listener.OnCardDisplayed(card);
+        }
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -57,6 +63,7 @@ public class CardFragment extends Fragment {
         prepareViews(layout);
         return layout;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -70,6 +77,30 @@ public class CardFragment extends Fragment {
                 methodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
             }
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            this.listener = (CardListener) activity;
+        } catch (ClassCastException e){
+            Log.i(TAG, "container is not listening");
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(this.listener != null){
+            this.listener.OnCardClosed();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.listener = null;
     }
 
     private void prepareViews(View layout) {
@@ -200,5 +231,10 @@ public class CardFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    public interface CardListener {
+        public void OnCardDisplayed(Card card);
+        public void OnCardClosed();
     }
 }

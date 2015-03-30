@@ -1,7 +1,6 @@
 package me.fixmycode.wscollector.fragments;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -25,11 +24,8 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     public static final String RECYCLER_VISIBLE = "RECYCLER_VISIBLE";
     public static final String RECYCLER_MESSAGE = "RECYCLER_MESSAGE";
     public static final String CARD_LIST = "CARD_LIST";
-    public static final String CARD_SHOWN = "CARD_SHOWN";
 
     private ArrayList cardList;
-    private Card cardShown;
-    private LibraryFragment.LibraryListener listener;
 
     public static SearchFragment newInstance(@Nullable String query){
         SearchFragment fragment = new SearchFragment();
@@ -50,10 +46,6 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
             showRecyclerView(false, R.string.search_code_or_title);
         } else {
             cardList = (ArrayList) savedInstanceState.getSerializable(CARD_LIST);
-            cardShown = (Card) savedInstanceState.getSerializable(CARD_SHOWN);
-            if(cardShown != null && this.listener != null){
-                this.listener.OnCardDisplayed(cardShown);
-            }
             setupRecycler(cardList);
             showRecyclerView(savedInstanceState.getBoolean(RECYCLER_VISIBLE),
                     savedInstanceState.getCharSequence(RECYCLER_MESSAGE));
@@ -62,28 +54,11 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.listener = (LibraryFragment.LibraryListener) activity;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if(listener != null){
-            this.listener.OnCardClosed();
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(RECYCLER_VISIBLE, getRecyclerView().getVisibility() == View.VISIBLE);
         outState.putCharSequence(RECYCLER_MESSAGE, getRecyclerMessage());
         outState.putSerializable(CARD_LIST, cardList);
-        if(cardShown != null){
-            outState.putSerializable(CARD_SHOWN, cardShown);
-        }
     }
 
     @Override
@@ -136,10 +111,6 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
                         .add(R.id.container, CardFragment.newInstance(entity))
                         .addToBackStack(null)
                         .commit();
-                cardShown = entity;
-                if(listener != null){
-                    listener.OnCardDisplayed(entity);
-                }
             }
         });
     }

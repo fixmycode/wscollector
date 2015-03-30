@@ -1,6 +1,5 @@
 package me.fixmycode.wscollector.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -30,7 +29,6 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
     public static final String PARAM_TYPE = "type";
     public static final String TOOLBAR_TITLE = "TOOLBAR_TITLE";
     public static final String ITEM_LIST = "ITEM_LIST";
-    public static final String CARD_SHOWN = "CARD_SHOWN";
     public static final String TAG = "FRAG_LIBRARY";
     public static final int LEVEL_SERIES = 0;
     public static final int LEVEL_CHILDREN = 1;
@@ -40,8 +38,6 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
     private Long browsingItem;
     private ArrayList itemList;
     private int toolbarTitle;
-    private LibraryListener listener;
-    private Card cardShown;
 
     public static LibraryFragment newInstance(int level, Long itemId, Long itemType){
         LibraryFragment fragment = new LibraryFragment();
@@ -67,29 +63,10 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
         } else {
             itemList = (ArrayList) savedInstanceState.getSerializable(ITEM_LIST);
             toolbarTitle = savedInstanceState.getInt(TOOLBAR_TITLE);
-            cardShown = (Card) savedInstanceState.getSerializable(CARD_SHOWN);
-            if(cardShown != null && this.listener != null){
-                this.listener.OnCardDisplayed(cardShown);
-            }
             setupRecycler(itemList);
             showRecyclerView(true);
         }
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.listener = (LibraryListener) activity;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if(this.cardShown != null && this.listener != null){
-            this.listener.OnCardClosed();
-            this.cardShown = null;
-        }
     }
 
     @Override
@@ -164,9 +141,6 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
         super.onSaveInstanceState(outState);
         outState.putSerializable(ITEM_LIST, this.itemList);
         outState.putInt(TOOLBAR_TITLE, this.toolbarTitle);
-        if(this.cardShown != null) {
-            outState.putSerializable(CARD_SHOWN, this.cardShown);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -227,16 +201,7 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
                         .add(R.id.container, CardFragment.newInstance(entity))
                         .addToBackStack(null)
                         .commit();
-                cardShown = entity;
-                if(listener != null){
-                    listener.OnCardDisplayed(entity);
-                }
             }
         });
-    }
-
-    public interface LibraryListener {
-        public void OnCardDisplayed(Card card);
-        public void OnCardClosed();
     }
 }

@@ -12,13 +12,12 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 
-import me.fixmycode.wscollector.fragments.LibraryFragment;
+import me.fixmycode.wscollector.fragments.CardFragment;
 import me.fixmycode.wscollector.fragments.SearchFragment;
-import me.fixmycode.wscollector.wsdb.Card;
 
 
 public class SearchActivity extends BaseActivity
-        implements SearchView.OnQueryTextListener, LibraryFragment.LibraryListener,
+        implements SearchView.OnQueryTextListener, CardFragment.CardListener,
                    FragmentManager.OnBackStackChangedListener {
     public static final String TAG = "ACT_SEARCH";
 
@@ -96,57 +95,11 @@ public class SearchActivity extends BaseActivity
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
-        OnCardClosed();
         if(!shouldGoBack()){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             finish();
             return false;
         }
         return super.onSupportNavigateUp();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        OnCardClosed();
-    }
-
-    @Override
-    public void OnCardDisplayed(Card card) {
-        int color = R.color.primary;
-        int dark_color = R.color.primary_dark;
-        switch (card.getColor().toLowerCase()){
-            case "red":
-                color = R.color.red;
-                dark_color = R.color.dark_red;
-                break;
-            case "blue":
-                color = R.color.blue;
-                dark_color = R.color.dark_blue;
-                break;
-            case "green":
-                color = R.color.green;
-                dark_color = R.color.dark_green;
-                break;
-            case "yellow":
-                color = R.color.yellow;
-                dark_color = R.color.dark_yellow;
-        }
-
-        getToolbar().setBackgroundColor(getResources().getColor(color));
-
-        if(Build.VERSION.SDK_INT >= 21){
-            getWindow().setStatusBarColor(getResources().getColor(dark_color));
-        }
-
-    }
-
-    @Override
-    public void OnCardClosed() {
-        getToolbar().setBackgroundColor(getResources().getColor(R.color.primary));
-
-        if(Build.VERSION.SDK_INT >= 21){
-            getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
-        }
     }
 }

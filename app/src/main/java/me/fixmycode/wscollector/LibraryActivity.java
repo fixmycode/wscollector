@@ -33,7 +33,7 @@ public class LibraryActivity extends BaseActivity
         shouldGoBack();
     }
 
-    private void shouldGoBack(){
+    private void shouldGoBack() {
         Boolean canGoBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
         getSupportActionBar().setDisplayHomeAsUpEnabled(canGoBack);
     }
@@ -47,26 +47,23 @@ public class LibraryActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_library, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.action_search:
-                openSearch(); return true;
+                openSearch();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    protected void openSearch(){
+    protected void openSearch() {
         startActivity(new Intent(this, SearchActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
     }

@@ -18,7 +18,7 @@ import me.fixmycode.wscollector.fragments.SearchFragment;
 
 public class SearchActivity extends BaseActivity
         implements SearchView.OnQueryTextListener, CardFragment.CardListener,
-                   FragmentManager.OnBackStackChangedListener {
+        FragmentManager.OnBackStackChangedListener {
     public static final String TAG = "ACT_SEARCH";
 
     @Override
@@ -27,7 +27,7 @@ public class SearchActivity extends BaseActivity
         setContentView(R.layout.activity_container);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, SearchFragment.newInstance(null), TAG)
                     .commit();
@@ -42,7 +42,7 @@ public class SearchActivity extends BaseActivity
         getMenuInflater().inflate(R.menu.menu_search, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView;
-        if(Build.VERSION.SDK_INT > 10){
+        if (Build.VERSION.SDK_INT > 10) {
             searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         } else {
             searchView = (SearchView) MenuItemCompat
@@ -54,16 +54,16 @@ public class SearchActivity extends BaseActivity
         return true;
     }
 
-    private void handleIntent(Intent intent){
-        if(intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEARCH)){
+    private void handleIntent(Intent intent) {
+        if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEARCH)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             showResults(query);
         }
     }
 
-    private void showResults(String query){
+    private void showResults(String query) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
-        if(fragment != null){
+        if (fragment != null) {
             ((SearchFragment) fragment).setQuery(query);
         } else {
             Log.e(TAG, "fragment not found");
@@ -86,7 +86,7 @@ public class SearchActivity extends BaseActivity
         shouldGoBack();
     }
 
-    private Boolean shouldGoBack(){
+    private Boolean shouldGoBack() {
         Boolean canGoBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
         getSupportActionBar().setDisplayHomeAsUpEnabled(canGoBack);
         return canGoBack;
@@ -95,7 +95,7 @@ public class SearchActivity extends BaseActivity
     @Override
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
-        if(!shouldGoBack()){
+        if (!shouldGoBack()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             finish();
             return false;

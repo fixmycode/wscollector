@@ -11,7 +11,7 @@ import me.fixmycode.wscollector.wsdb.Item;
 
 public class CardViewHolder extends ItemViewHolder {
 
-    public static final String TAG = "VHSERIE";
+    public static final String TAG = "VH_CARD";
     private ImageView image;
     private TextView title;
     private TextView description;
@@ -36,9 +36,12 @@ public class CardViewHolder extends ItemViewHolder {
     private void setImage(String type, String color) {
         int typeNum, colorNum;
         int[][] drawables = new int[][]{
-            {R.drawable.red_chara, R.drawable.blue_chara, R.drawable.green_chara, R.drawable.yellow_chara},
-            {R.drawable.red_event, R.drawable.blue_event, R.drawable.green_event, R.drawable.yellow_event},
-            {R.drawable.red_climax, R.drawable.blue_climax, R.drawable.green_climax, R.drawable.yellow_climax}
+            {R.drawable.red_chara, R.drawable.blue_chara,
+                    R.drawable.green_chara, R.drawable.yellow_chara},
+            {R.drawable.red_event, R.drawable.blue_event,
+                    R.drawable.green_event, R.drawable.yellow_event},
+            {R.drawable.red_climax, R.drawable.blue_climax,
+                    R.drawable.green_climax, R.drawable.yellow_climax}
         };
         switch (type.toLowerCase()) {
             case "character":

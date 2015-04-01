@@ -78,7 +78,6 @@ public class SerieViewHolder extends ItemViewHolder {
 
     @Override
     public void onClick(View v) {
-        Log.d(TAG, String.format("Item selected: %s (%d)", serie.getTitle(), serie.getId()));
         getAdapter().onItemClick(serie);
     }
 }

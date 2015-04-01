@@ -39,15 +39,15 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
     private ArrayList itemList;
     private int toolbarTitle;
 
-    public static LibraryFragment newInstance(int level, Long itemId, Long itemType){
+    public static LibraryFragment newInstance(int level, Long itemId, Long itemType) {
         LibraryFragment fragment = new LibraryFragment();
         Bundle args = new Bundle();
-        if(level > LEVEL_SERIES && itemId == null){
+        if (level > LEVEL_SERIES && itemId == null) {
             throw new IllegalArgumentException("item must be specified");
         }
         args.putInt(PARAM_LEVEL, level);
         args.putLong(PARAM_ITEM, itemId);
-        if(itemType != null)
+        if (itemType != null)
             args.putLong(PARAM_TYPE, itemType);
         fragment.setArguments(args);
         return fragment;
@@ -58,7 +58,7 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         getRecyclerView().setHasFixedSize(true);
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             showRecyclerView(false);
         } else {
             itemList = (ArrayList) savedInstanceState.getSerializable(ITEM_LIST);
@@ -76,7 +76,7 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         getRecyclerView().setLayoutManager(layoutManager);
 
-        if(getArguments() != null){
+        if (getArguments() != null) {
             Bundle args = getArguments();
             int browsingLevel = args.getInt(PARAM_LEVEL);
             browsingItem = args.getLong(PARAM_ITEM);
@@ -87,7 +87,7 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
         }
     }
 
-    private void loadList(int level, Long type, Long item){
+    private void loadList(int level, Long type, Long item) {
         Log.d(TAG, "loading list...");
         DataBrowser dataBrowser = DataBrowser.getInstance(getActivity());
         Toolbar toolbar = getBaseActivity().getToolbar();
@@ -144,9 +144,9 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
     }
 
     @SuppressWarnings("unchecked")
-    private void setupRecycler(ArrayList list, Long parentItem){
+    private void setupRecycler(ArrayList list, Long parentItem) {
         Log.d(TAG, "list loaded!");
-        if(list != null && list.size() > 0) {
+        if (list != null && list.size() > 0) {
             ItemAdapter adapter = new ItemAdapter(itemList, parentItem);
             adapter.addListener(this);
             getRecyclerView().setAdapter(adapter);
@@ -157,17 +157,17 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
         }
     }
 
-    private void setupRecycler(ArrayList list){
+    private void setupRecycler(ArrayList list) {
         this.setupRecycler(list, null);
     }
 
     @Override
     public void onItemClick(Item item) {
         Log.d(TAG, String.format("Opening item with ID %d", item.getId()));
-        switch (item.getItemType()){
+        switch (item.getItemType()) {
             case Item.TYPE_SERIE:
                 Serie serie = (Serie) item;
-                if(serie.getChildren() > 0){
+                if (serie.getChildren() > 0) {
                     prepareFragment(LEVEL_CHILDREN, serie.getId(), null);
                 } else prepareFragment(LEVEL_RELEASES, serie.getId(), null);
                 break;
@@ -181,7 +181,7 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
         }
     }
 
-    private void prepareFragment(Integer level,  Long itemId, @Nullable Long type){
+    private void prepareFragment(Integer level, Long itemId, @Nullable Long type) {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         manager.beginTransaction()
                 .setCustomAnimations(android.R.anim.slide_in_left,

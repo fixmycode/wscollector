@@ -20,7 +20,8 @@ public abstract class BaseFragment extends Fragment {
     private View curtain;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_recycler, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         curtain = layout.findViewById(R.id.courtain);
@@ -32,13 +33,13 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showRecyclerView(Boolean visible, CharSequence message) {
-        if(recyclerView != null && curtain != null) {
-            if(visible){
+        if (recyclerView != null && curtain != null) {
+            if (visible) {
                 recyclerView.setVisibility(View.VISIBLE);
                 curtain.setVisibility(View.GONE);
             } else {
                 recyclerView.setVisibility(View.GONE);
-                if(message != null) {
+                if (message != null) {
                     curtain.setVisibility(View.VISIBLE);
                     TextView messageText = (TextView) curtain.findViewById(R.id.message_text);
                     messageText.setText(message);
@@ -47,7 +48,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    public CharSequence getRecyclerMessage(){
+    public CharSequence getRecyclerMessage() {
         TextView messageText = (TextView) curtain.findViewById(R.id.message_text);
         return messageText.getText();
     }

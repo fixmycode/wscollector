@@ -27,9 +27,9 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
 
     private ArrayList cardList;
 
-    public static SearchFragment newInstance(@Nullable String query){
+    public static SearchFragment newInstance(@Nullable String query) {
         SearchFragment fragment = new SearchFragment();
-        if(query != null){
+        if (query != null) {
             Bundle args = new Bundle();
             args.putString(PARAM_QUERY, query);
             fragment.setArguments(args);
@@ -41,7 +41,7 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         getRecyclerView().setHasFixedSize(true);
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             Log.d(TAG, "New Search Fragment created");
             showRecyclerView(false, R.string.search_code_or_title);
         } else {
@@ -68,12 +68,12 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         getRecyclerView().setLayoutManager(layoutManager);
 
-        if(getArguments() != null){
+        if (getArguments() != null) {
             setQuery(getArguments().getString(PARAM_QUERY));
         }
     }
 
-    public void setQuery(String like){
+    public void setQuery(String like) {
         DataBrowser dataBrowser = DataBrowser.getInstance(getActivity());
         dataBrowser.getSearchListAsync(like, new DataBrowser.ListCallback<Card>() {
             @Override
@@ -85,8 +85,8 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     }
 
     @SuppressWarnings("unchecked")
-    private void setupRecycler(ArrayList list){
-        if(list != null && list.size() > 0) {
+    private void setupRecycler(ArrayList list) {
+        if (list != null && list.size() > 0) {
             ItemAdapter adapter = new ItemAdapter(list, null);
             adapter.addListener(this);
             getRecyclerView().setAdapter(adapter);

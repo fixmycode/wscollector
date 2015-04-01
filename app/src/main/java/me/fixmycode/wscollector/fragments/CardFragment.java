@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.regex.Matcher;
@@ -51,7 +52,7 @@ public class CardFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_card, container, false);
         card = (Card) getArguments().getSerializable(PARAM_CARD);
-        if(this.listener != null){
+        if (this.listener != null) {
             this.listener.OnCardDisplayed(card);
         }
         layout.setOnTouchListener(new View.OnTouchListener() {
@@ -70,9 +71,9 @@ public class CardFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         InputMethodManager methodManager = (InputMethodManager) getActivity()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (methodManager != null){
+        if (methodManager != null) {
             View currentFocus = getActivity().getCurrentFocus();
-            if(currentFocus != null){
+            if (currentFocus != null) {
                 currentFocus.clearFocus();
                 methodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
             }
@@ -84,7 +85,7 @@ public class CardFragment extends Fragment {
         super.onAttach(activity);
         try {
             this.listener = (CardListener) activity;
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.i(TAG, "container is not listening");
         }
     }
@@ -92,7 +93,7 @@ public class CardFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(this.listener != null){
+        if (this.listener != null) {
             this.listener.OnCardClosed();
         }
     }
@@ -104,81 +105,125 @@ public class CardFragment extends Fragment {
     }
 
     private void prepareViews(View layout) {
-        TextView flavorText = (TextView) layout.findViewById(R.id.flavor_text);
-        TextView cardText = (TextView) layout.findViewById(R.id.card_text);
-        TextView codeText = (TextView) layout.findViewById(R.id.code);
-        TextView powerText = (TextView) layout.findViewById(R.id.power);
-        TextView titleText = (TextView) layout.findViewById(R.id.title);
-        TextView titleJpText = (TextView) layout.findViewById(R.id.title_jp);
-        TextView kwOne = (TextView) layout.findViewById(R.id.kw_one);
-        TextView kwTwo = (TextView) layout.findViewById(R.id.kw_two);
+        ScrollView scrollerBar = (ScrollView) layout.findViewById(R.id.scroller_bar);
         LinearLayout colorBar = (LinearLayout) layout.findViewById(R.id.color_bar);
-        LinearLayout keywordBar = (LinearLayout) layout.findViewById(R.id.kw_bar);
-        ImageView typeIcon = (ImageView) layout.findViewById(R.id.type_icon);
-        RelativeLayout powerBar = (RelativeLayout) layout.findViewById(R.id.power_bar);
 
-        if(card.getFlavor() != null) {
+        prepareScrollerBar(scrollerBar);
+        prepareColorBar(colorBar);
+    }
+
+    private void prepareScrollerBar(View scrollerBar) {
+        TextView flavorText = (TextView) scrollerBar.findViewById(R.id.flavor_text);
+        TextView cardText = (TextView) scrollerBar.findViewById(R.id.card_text);
+
+        if (card.getFlavor() != null) {
             flavorText.setText(card.getFlavor());
         } else flavorText.setVisibility(View.GONE);
 
-        if(card.getCardText() != null) {
+
+        if (card.getCardText() != null) {
             String text = card.getCardText();
-            SpannableString textSpan = new SpannableString(text);
-
-            Pattern pattern = Pattern.compile("\\[([CAS])\\]");
-            Matcher matcher = pattern.matcher(text);
-            while(matcher.find()) {
-                String match = matcher.group(1);
-                String effect = null;
-                switch (match) {
-                    case "C": effect = "CONT"; break;
-                    case "A": effect = "AUTO"; break;
-                    case "S": effect = "ACT"; break;
-                }
-                if(effect != null){
-                    EffectDrawable drawable = new EffectDrawable(cardText, effect);
-                    ImageSpan effectSpan = new ImageSpan(drawable,
-                            DynamicDrawableSpan.ALIGN_BOTTOM);
-                    textSpan.setSpan(effectSpan, matcher.start(), matcher.end(), 0);
-                }
-            }
-
-            pattern = Pattern.compile("\\[(Clock?|Counter)\\]", Pattern.CASE_INSENSITIVE);
-            matcher = pattern.matcher(text);
-            while (matcher.find()) {
-                String match = matcher.group(1).substring(0,3).toLowerCase();
-                Drawable icon = null;
-                switch (match) {
-                    case "clo": icon = getResources().getDrawable(R.drawable.clock_text); break;
-                    case "cou": icon = getResources().getDrawable(R.drawable.counter_text); break;
-                }
-                if (icon != null) {
-                    icon.setBounds(0, 0, cardText.getLineHeight(), cardText.getLineHeight());
-                    ImageSpan iconSpan = new ImageSpan(icon, DynamicDrawableSpan.ALIGN_BOTTOM);
-                    textSpan.setSpan(iconSpan, matcher.start(), matcher.end(), 0);
-                }
-            }
-
-            pattern = Pattern.compile("ACCELERATE|ALARM|ASSIST|BACKUP( \\d+, Level \\d)?|" +
-                    "BOND(/\"[^\"]+\")?|BRAINSTORM|CHANGE|ENCORE|EXPERIENCE|MEMORY|RECOLLECTION|" +
-                    "S(HIFT|hift)(,? Level \\d)?");
-            matcher = pattern.matcher(text);
-
-            while (matcher.find()) {
-                textSpan.setSpan(new StyleSpan(Typeface.BOLD), matcher.start(), matcher.end(), 0);
-            }
-
-            cardText.setText(textSpan, TextView.BufferType.SPANNABLE);
+            cardText.setText(buildTextSpan(cardText, text), TextView.BufferType.SPANNABLE);
         } else cardText.setVisibility(View.GONE);
+    }
+
+    private SpannableString buildTextSpan(TextView textView, String text) {
+        SpannableString textSpan = new SpannableString(text);
+
+        Pattern pattern = Pattern.compile("\\[([CAS])\\]");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String match = matcher.group(1);
+            String effect = null;
+            switch (match) {
+                case "C":
+                    effect = "CONT";
+                    break;
+                case "A":
+                    effect = "AUTO";
+                    break;
+                case "S":
+                    effect = "ACT";
+                    break;
+            }
+            if (effect != null) {
+                EffectDrawable drawable = new EffectDrawable(textView, effect);
+                ImageSpan effectSpan = new ImageSpan(drawable,
+                        DynamicDrawableSpan.ALIGN_BOTTOM);
+                textSpan.setSpan(effectSpan, matcher.start(), matcher.end(), 0);
+            }
+        }
+
+        pattern = Pattern.compile("\\[(Clock?|Counter)\\]", Pattern.CASE_INSENSITIVE);
+        matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String match = matcher.group(1).substring(0, 3).toLowerCase();
+            Drawable icon = null;
+            switch (match) {
+                case "clo":
+                    icon = getResources().getDrawable(R.drawable.clock_text);
+                    break;
+                case "cou":
+                    icon = getResources().getDrawable(R.drawable.counter_text);
+                    break;
+            }
+            if (icon != null) {
+                icon.setBounds(0, 0, textView.getLineHeight(), textView.getLineHeight());
+                ImageSpan iconSpan = new ImageSpan(icon, DynamicDrawableSpan.ALIGN_BOTTOM);
+                textSpan.setSpan(iconSpan, matcher.start(), matcher.end(), 0);
+            }
+        }
+
+        pattern = Pattern.compile("ACCELERATE|ALARM|ASSIST|BACKUP( \\d+, Level \\d)?|" +
+                "BOND(/\"[^\"]+\")?|BRAINSTORM|CHANGE|ENCORE|EXPERIENCE|MEMORY|RECOLLECTION|" +
+                "S(HIFT|hift)(,? Level \\d)?");
+        matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            textSpan.setSpan(new StyleSpan(Typeface.BOLD), matcher.start(), matcher.end(), 0);
+        }
+
+        return textSpan;
+    }
+
+    private void prepareColorBar(View colorBar) {
+        TextView titleText = (TextView) colorBar.findViewById(R.id.title);
+        TextView titleJpText = (TextView) colorBar.findViewById(R.id.title_jp);
+        LinearLayout keywordBar = (LinearLayout) colorBar.findViewById(R.id.kw_bar);
+        RelativeLayout powerBar = (RelativeLayout) colorBar.findViewById(R.id.power_bar);
+
+        switch (card.getColor().toLowerCase()) {
+            case "red":
+                colorBar.setBackgroundResource(R.drawable.red_color_bar);
+                break;
+            case "blue":
+                colorBar.setBackgroundResource(R.drawable.blue_color_bar);
+                break;
+            case "green":
+                colorBar.setBackgroundResource(R.drawable.green_color_bar);
+                break;
+            case "yellow":
+                colorBar.setBackgroundResource(R.drawable.yellow_color_bar);
+                break;
+        }
+
+        titleText.setText(card.getTitle());
+        titleJpText.setText(card.getTitleJp());
+
+        preparePowerBar(powerBar);
+        prepareKeywordBar(keywordBar);
+    }
+
+    private void preparePowerBar(View powerBar) {
+        TextView codeText = (TextView) powerBar.findViewById(R.id.code);
+        TextView powerText = (TextView) powerBar.findViewById(R.id.power);
+        ImageView typeIcon = (ImageView) powerBar.findViewById(R.id.type_icon);
 
         powerText.setVisibility(View.GONE);
         typeIcon.setVisibility(View.GONE);
-        keywordBar.setVisibility(View.GONE);
-        kwOne.setVisibility(View.GONE);
-        kwTwo.setVisibility(View.GONE);
 
         String cardType = card.getType().toLowerCase();
-        switch (cardType.toLowerCase()){
+        switch (cardType.toLowerCase()) {
             case "character":
                 powerText.setVisibility(View.VISIBLE);
                 break;
@@ -192,38 +237,13 @@ public class CardFragment extends Fragment {
                 break;
         }
 
-        if(card.getKwOne() != null){
-            keywordBar.setVisibility(View.VISIBLE);
-            kwOne.setVisibility(View.VISIBLE);
-            kwOne.setText(card.getKwOne());
-        }
-
-        if(card.getKwTwo() != null){
-            keywordBar.setVisibility(View.VISIBLE);
-            kwTwo.setVisibility(View.VISIBLE);
-            kwTwo.setText(card.getKwTwo());
-        }
-
         codeText.setText(card.getCode());
-        titleText.setText(card.getTitle());
-        titleJpText.setText(card.getTitleJp());
         powerText.setText(String.valueOf(card.getPower()));
-
-        switch (card.getColor().toLowerCase()){
-            case "red":
-                colorBar.setBackgroundResource(R.drawable.red_color_bar); break;
-            case "blue":
-                colorBar.setBackgroundResource(R.drawable.blue_color_bar); break;
-            case "green":
-                colorBar.setBackgroundResource(R.drawable.green_color_bar); break;
-            case "yellow":
-                colorBar.setBackgroundResource(R.drawable.yellow_color_bar); break;
-        }
 
         powerBar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Uri uri = Uri.parse("https://www.google.com/search?tbm=isch&q="+card.getCode());
+                Uri uri = Uri.parse("https://www.google.com/search?tbm=isch&q=" + card.getCode());
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 //                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
 //                intent.putExtra(SearchManager.QUERY, "images of "+ card.getCode());
@@ -233,8 +253,30 @@ public class CardFragment extends Fragment {
         });
     }
 
+    private void prepareKeywordBar(View keywordBar) {
+        TextView kwOne = (TextView) keywordBar.findViewById(R.id.kw_one);
+        TextView kwTwo = (TextView) keywordBar.findViewById(R.id.kw_two);
+
+        keywordBar.setVisibility(View.GONE);
+        kwOne.setVisibility(View.GONE);
+        kwTwo.setVisibility(View.GONE);
+
+        if (card.getKwOne() != null) {
+            keywordBar.setVisibility(View.VISIBLE);
+            kwOne.setVisibility(View.VISIBLE);
+            kwOne.setText(card.getKwOne());
+        }
+
+        if (card.getKwTwo() != null) {
+            keywordBar.setVisibility(View.VISIBLE);
+            kwTwo.setVisibility(View.VISIBLE);
+            kwTwo.setText(card.getKwTwo());
+        }
+    }
+
     public interface CardListener {
         public void OnCardDisplayed(Card card);
+
         public void OnCardClosed();
     }
 }

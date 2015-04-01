@@ -8,6 +8,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/color_bar"
         android:background="@drawable/scroll_background"
+        android:id="@+id/scroller_bar"
         android:fillViewport="true"
         android:elevation="6dp">
         <LinearLayout

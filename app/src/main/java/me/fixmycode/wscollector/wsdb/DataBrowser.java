@@ -2,8 +2,10 @@ package me.fixmycode.wscollector.wsdb;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
@@ -141,8 +143,17 @@ public class DataBrowser extends SQLiteAssetHelper {
     public ArrayList<Card> getSearchList(String like){
         ArrayList<Card> cardList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
+        like = like.replaceAll("%", "\\\\%");
+        like = like.replaceAll("_", "\\\\_");
+        like = like.replaceAll("\\*", "%");
+        if(!like.matches("\".*\"")){
+            like = "%" + like + "%";
+        } else {
+            like = like.replaceAll("\"(.*)\"", "$1");
+        }
+        Log.d("DATA", "like string: "+like);
         Cursor c = db.rawQuery("select id, title, title_jp, code, color, type " +
-                "from Card where title like ? or code like ? limit 100", new String[]{"%"+like+"%", "%"+like+"%"});
+                "from Card where title like ? or code like ? limit 100", new String[]{like, like});
         c.moveToFirst();
         while(!c.isAfterLast()){
             cardList.add(Card.fromCursor(c, true));

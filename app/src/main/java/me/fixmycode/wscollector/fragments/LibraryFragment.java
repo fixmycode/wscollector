@@ -57,7 +57,6 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        getRecyclerView().setHasFixedSize(true);
         if (savedInstanceState == null) {
             showRecyclerView(false);
         } else {
@@ -72,9 +71,6 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        getRecyclerView().setLayoutManager(layoutManager);
 
         if (getArguments() != null) {
             Bundle args = getArguments();
@@ -189,19 +185,5 @@ public class LibraryFragment extends BaseFragment implements ItemAdapter.Adapter
                 .replace(R.id.container, LibraryFragment.newInstance(level, itemId, type))
                 .addToBackStack(null)
                 .commit();
-    }
-
-    private void showCard(Card card) {
-        DataBrowser.getInstance(getActivity()).getCardAsync(card.getId(), new DataBrowser.Callback<Card>() {
-            @Override
-            public void onGet(Card entity) {
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .add(R.id.container, CardFragment.newInstance(entity))
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
     }
 }

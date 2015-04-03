@@ -40,7 +40,6 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        getRecyclerView().setHasFixedSize(true);
         if (savedInstanceState == null) {
             Log.d(TAG, "New Search Fragment created");
             showRecyclerView(false, R.string.search_code_or_title);
@@ -64,9 +63,6 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        getRecyclerView().setLayoutManager(layoutManager);
 
         if (getArguments() != null) {
             setQuery(getArguments().getString(PARAM_QUERY));
@@ -99,19 +95,5 @@ public class SearchFragment extends BaseFragment implements ItemAdapter.AdapterL
     @Override
     public void onItemClick(Item item) {
         showCard((Card) item);
-    }
-
-    private void showCard(Card card) {
-        DataBrowser.getInstance(getActivity()).getCardAsync(card.getId(), new DataBrowser.Callback<Card>() {
-            @Override
-            public void onGet(Card entity) {
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .add(R.id.container, CardFragment.newInstance(entity))
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
     }
 }

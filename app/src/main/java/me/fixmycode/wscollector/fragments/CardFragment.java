@@ -175,8 +175,8 @@ public class CardFragment extends Fragment {
         }
 
         pattern = Pattern.compile("ACCELERATE|ALARM|ASSIST|BACKUP( \\d+, Level \\d)?|" +
-                "BOND(/\"[^\"]+\")?|BRAINSTORM|CHANGE|ENCORE|EXPERIENCE|MEMORY|RECOLLECTION|" +
-                "S(HIFT|hift)(,? Level \\d)?");
+                "BODYGUARD|BOND(/\"[^\"]+\")?|BRAINSTORM|CHANGE|ENCORE|EXPERIENCE|MEMORY|" +
+                "RECOLLECTION|S(HIFT|hift)(,? Level \\d)?");
         matcher = pattern.matcher(text);
 
         while (matcher.find()) {

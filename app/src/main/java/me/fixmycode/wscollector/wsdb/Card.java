@@ -1,6 +1,7 @@
 package me.fixmycode.wscollector.wsdb;
 
 import android.database.Cursor;
+import android.os.Parcel;
 
 import java.io.Serializable;
 
@@ -194,5 +195,37 @@ public class Card implements Item, Serializable {
 
     public String getFlavor() {
         return flavor;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.titleJp);
+        dest.writeString(this.code);
+        dest.writeString(this.color);
+        dest.writeString(this.type);
+    }
+
+    public static final Creator<Card> CREATOR = new Creator<Card>() {
+        @Override
+        public Card createFromParcel(Parcel p) {
+            return new Card(p.readLong(), p.readString(), p.readString(), p.readString(), p.readString(), p.readString());
+        }
+
+        @Override
+        public Card[] newArray(int size) {
+            return new Card[size];
+        }
+    };
+
+    @Override
+    public String toString() {
+        return String.format("[%s] %s", this.code, this.title);
     }
 }

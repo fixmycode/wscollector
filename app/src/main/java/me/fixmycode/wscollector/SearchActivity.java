@@ -3,28 +3,30 @@ package me.fixmycode.wscollector;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import me.fixmycode.wscollector.fragments.CardFragment;
-import me.fixmycode.wscollector.fragments.SearchFragment;
-import me.fixmycode.wscollector.wsdb.Card;
+import java.util.ArrayList;
 
+import me.fixmycode.wscollector.adapters.ItemAdapter;
+import me.fixmycode.wscollector.fragments.CardFragment;
+import me.fixmycode.wscollector.fragments.ItemListFragment;
+import me.fixmycode.wscollector.wsdb.Card;
+import me.fixmycode.wscollector.wsdb.DataBrowser;
+import me.fixmycode.wscollector.wsdb.Item;
 
 public class SearchActivity extends BaseActivity
         implements SearchView.OnQueryTextListener, CardFragment.CardListener,
-        FragmentManager.OnBackStackChangedListener {
+        ItemAdapter.AdapterListener {
     public static final String TAG = "ACT_SEARCH";
+    private static final String PARAM_QUERY = "query";
 
     private SearchView searchView;
+    private String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +35,14 @@ public class SearchActivity extends BaseActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, SearchFragment.newInstance(null), TAG)
-                    .commit();
+            Log.d(TAG, "New Search Activity created");
+            ItemListFragment fragment = prepareFragment(null, null, false, false);
+            fragment.setCurtainMessage(getString(R.string.search_code_or_title));
             if (getIntent() != null) {
                 handleIntent(getIntent());
             }
+        } else {
+            this.query = savedInstanceState.getString(PARAM_QUERY);
         }
     }
 
@@ -64,21 +68,33 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void showResults(String query) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment != null) {
-            ((SearchFragment) fragment).setQuery(query);
-        } else {
-            Log.e(TAG, "fragment not found");
+    private void showResults(final String query) {
+        if(this.query == null || !this.query.equals(query)) {
+            if(getSupportFragmentManager().findFragmentByTag(CardFragment.TAG) != null){
+                onSupportNavigateUp();
+            }
+            this.query = query;
+            DataBrowser.getInstance(this).getSearchListAsync(query, new DataBrowser.ListCallback<Card>() {
+                @Override
+                public void onGet(ArrayList<Card> list) {
+                    ItemListFragment fragment = prepareFragment(list, null, false, false);
+                    if (list.size() == 0)
+                        fragment.setCurtainMessage(getString(R.string.no_results));
+                }
+            });
         }
     }
 
     @Override
-    public boolean onQueryTextSubmit(String s) {
-        FragmentManager manager = getSupportFragmentManager();
-        if(manager.findFragmentByTag("CARD") != null){
-            onSupportNavigateUp();
+    protected void onSaveInstanceState(Bundle outState) {
+        if(this.query != null){
+            outState.putString(PARAM_QUERY, this.query);
         }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
         showResults(s);
         return true;
     }
@@ -86,17 +102,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public boolean onQueryTextChange(String s) {
         return false;
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        shouldGoBack();
-    }
-
-    private Boolean shouldGoBack() {
-        Boolean canGoBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(canGoBack);
-        return canGoBack;
     }
 
     @Override
@@ -116,5 +121,10 @@ public class SearchActivity extends BaseActivity
         if(searchView != null){
             searchView.clearFocus();
         }
+    }
+
+    @Override
+    public void onItemClick(Item item) {
+        loadCard((Card) item);
     }
 }

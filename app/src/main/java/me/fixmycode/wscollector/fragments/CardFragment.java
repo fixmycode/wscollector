@@ -34,7 +34,7 @@ import me.fixmycode.wscollector.wsdb.Card;
 
 public class CardFragment extends Fragment {
     public static final String PARAM_CARD = "CARD";
-    private static final String TAG = "FRAG_CARD";
+    public static final String TAG = "FRAG_CARD";
 
     private Card card;
     private CardListener listener;
@@ -276,7 +276,6 @@ public class CardFragment extends Fragment {
 
     public interface CardListener {
         public void OnCardDisplayed(Card card);
-
         public void OnCardClosed();
     }
 }

@@ -1,7 +1,6 @@
 package me.fixmycode.wscollector.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,17 +38,19 @@ public class ReleaseViewHolder extends ItemViewHolder {
             DataBrowser.getInstance(getContext()).getCardCountAsync(serieId, release.getId(), new DataBrowser.CountCallback() {
                 @Override
                 public void onGet(int count) {
-                    setCount(count);
+                    release.setCount(count);
+                    setDescriptionCount(release.getCount());
                 }
             });
+        } else {
+            setDescriptionCount(release.getCount());
         }
         setImage(release.getTitle());
     }
 
-    private void setCount(int count){
+    private void setDescriptionCount(int count){
         this.description.setText(
                 getContext().getResources().getQuantityString(R.plurals.card_count, count, count));
-        this.release.setCount(count);
     }
 
     private void setImage(String title){
@@ -84,7 +85,6 @@ public class ReleaseViewHolder extends ItemViewHolder {
 
     @Override
     public void onClick(View v) {
-        Log.d(TAG, String.format("Item selected: %s (%d)", release.getTitle(), release.getId()));
         getAdapter().onItemClick(release);
     }
 }

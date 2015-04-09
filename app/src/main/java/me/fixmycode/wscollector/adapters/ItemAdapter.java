@@ -12,27 +12,18 @@ import java.util.ArrayList;
 import me.fixmycode.wscollector.R;
 import me.fixmycode.wscollector.wsdb.Item;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+public class ItemAdapter<T extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
 
     public static final String TAG = "ITEMADAPTER";
 
-    private ArrayList<Item> data;
+    private ArrayList<T> data;
     private AdapterListener listener;
     private Long parentId;
     private TextDrawable.IBuilder drawableBuilder;
 
-    public ItemAdapter(ArrayList<Item> data){
-        this(data, null);
-    }
-
-    public ItemAdapter(ArrayList<Item> data, Long parentId){
+    public ItemAdapter(ArrayList<T> data, Long parentId){
         this.data = data;
         this.parentId = parentId;
-    }
-
-    public void changeDataSet(ArrayList<Item> data){
-        this.data = data;
-        this.notifyDataSetChanged();
     }
 
     @Override

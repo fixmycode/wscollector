@@ -8,7 +8,7 @@
 	<head>
 		<title>WS Collector</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="description" content="WS Collector is an Android app for browsing Heart of the Cards' Weiβ Schwarz TCG translations" />
+		<meta name="description" content="WS Collector is an Android app for browsing Weiβ Schwarz TCG translations" />
 		<meta name="keywords" content="Weiss Schwarz Weiβ TCG Android Trading Card Game Bushiroad" />
 		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
 		<script src="js/jquery.min.js"></script>
@@ -94,7 +94,7 @@
 							just open this site on your mobile browser and press the button.
 							</p>
 							<ul class="actions uniform">
-								<li><a href="https://github.com/fixmycode/wscollector/releases/download/v0.1.5-beta/ws-collector-v015.apk" class="button special">Download Version 0.1.5β</a></li>
+								<li><a href="https://github.com/fixmycode/wscollector/releases/download/v0.1.5-beta/ws-collector-v015.apk" class="button special" id="downloadLink">Download Version 0.1.5β</a></li>
 							</ul>
 							<p><a href="https://github.com/fixmycode/wscollector/releases/">Browse all releases</a></p>
 						</div>
@@ -133,27 +133,19 @@
 						<div class="6u$ 12u$(medium) important(medium)">
 							<header class="major"><h2>Not So Frequently Asked</h2></header>
 							<ul>
-								<li><strong>Q5: Where did you get these translations from?</strong>
-									<p>From a couple of different places, but mostly from the
-									amazing site <a href="http://www.heartofthecards.com/">Heart
-									of the Cards</a>. Now before you start pointing out those guys
-									don't want redistribution, I've hand picked, collected, fixed
-									and formatted each one of the translations in the app, to the
-									point many doesn't look anything like the originals.</p>
-								</li>
-								<li><strong>Q6: Is there going to be an iOS version?</strong>
+								<li><strong>Q5: Is there going to be an iOS version?</strong>
 									<p>It's on the plan, but right now I'm focusing on the android
 									version. If you're an iOS developer and want to help me with
 									it, please <a href="https://mail.google.com/mail/u/0/?view=cm&to=wscollector%2Bios@gmail.com&subject=iOS%20Developer">contact me.</a></p>
 								</li>
-								<li><strong>Q7: Is there any hidden feature?</strong>
+								<li><strong>Q6: Is there any hidden feature?</strong>
 									<p>Whenever you open a card, press the square left to the name
 										for a couple of seconds and see what happens.</p>
 								</li>
-								<li><strong>Q8: Is WS Collector open source?</strong>
+								<li><strong>Q7: Is WS Collector open source?</strong>
 									<p>All the code for the app is available at <a href="http://github.com/fixmycode/WSCollector/">Github</a></p>
 								</li>
-								<li><strong>Q9: Why are all the contact links redirecting me to Gmail!?</strong>
+								<li><strong>Q8: Why are all the contact links redirecting me to Gmail!?</strong>
 									<p>Everyone has a gmail account, but if you don't, you can
 									contact me to wscollector at gmail dot com.</p>
 								</li>
@@ -198,6 +190,7 @@
 			<section id="footer">
 				<ul class="icons">
 					<li><a href="http://www.twitter.com/ONi" class="icon alt fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="http://www.facebook.com/wscollector" class="icon alt fa-facebook"><span class="label">Facebook</span></a></li>
 					<li><a href="http://github.com/fixmycode/WSCollector" class="icon alt fa-github"><span class="label">GitHub</span></a></li>
 					<li><a href="https://mail.google.com/mail/u/0/?view=cm&to=wscollector@gmail.com" class="icon alt fa-envelope"><span class="label">Email</span></a></li>
 				</ul>
@@ -214,6 +207,10 @@
 
   ga('create', 'UA-61317760-1', 'auto');
   ga('send', 'pageview');
+
+	$('#downloadLink').on('click', function(){
+		ga('send', 'event', 'button', 'click', 'download', {'nonInteraction': 1});
+	});
 
 </script>
 	</body>

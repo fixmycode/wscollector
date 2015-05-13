@@ -32,7 +32,7 @@
 					<h1><strong>WS Collector</strong> let's you browse Weiβ Schwarz<br/>
 						 translations in your mobile device.</h1>
 					<ul class="actions">
-						<li><a href="#read" class="button scrolly">Read More &amp; Download</a></li>
+						<li><a id="readLink" href="#read" class="button scrolly">Read More &amp; Download</a></li>
 					</ul>
 				</div>
 			</section>
@@ -62,11 +62,11 @@
 								<li>All series including promotional collections</li>
 								<li>The search function let's you look for a code or title</li>
 								<li>Compatible with Android 2.3.3 and up</li>
-								<li><a href="#whatsnext">More to come</a></li>
+								<li><a id="nextLink" href="#whatsnext">More to come</a></li>
 							</ul>
 							<ul class="actions uniform">
-								<li><a href="#download" class="button special scrolly download-button">Download</a></li>
-								<li><a href="#faq" class="button">I have a question</a></li>
+								<li><a id="instructionsLink" href="#download" class="button special scrolly download-button">Download</a></li>
+								<li><a id="questionsLink" href="#faq" class="button">I have a question</a></li>
 							</ul>
 						</div>
 					</div>
@@ -96,7 +96,7 @@
 							<ul class="actions uniform">
 								<li><a href="https://github.com/fixmycode/wscollector/releases/download/v0.1.5-beta/ws-collector-v015.apk" class="button special" id="downloadLink">Download Version 0.1.5β</a></li>
 							</ul>
-							<p><a href="https://github.com/fixmycode/wscollector/releases/">Browse all releases</a></p>
+							<p><a id="releasesLink" href="https://github.com/fixmycode/wscollector/releases/">Browse all releases</a></p>
 						</div>
 					</div>
 				</div>
@@ -208,9 +208,16 @@
   ga('create', 'UA-61317760-1', 'auto');
   ga('send', 'pageview');
 
-	$('#downloadLink').on('click', function(){
-		ga('send', 'event', 'button', 'click', 'download', {'nonInteraction': 1});
-	});
+	var buttonEvent = function(label){
+		ga('send', 'event', 'button', 'click', label, {'nonInteraction': 1});
+	}
+
+	$('#downloadLink').on('click', buttonEvent('download'));
+	$('#readLink').on('click', buttonEvent('read'));
+	$('#instructionsLink').on('click', buttonEvent('instructions'));
+	$('#releasesLink').on('click', buttonEvent('releases'));
+	$('#questionsLink').on('click', buttonEvent('questions'));
+	$('#nextLink').on('click', buttonEvent('next'));
 
 </script>
 	</body>
